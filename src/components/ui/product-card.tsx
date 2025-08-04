@@ -18,14 +18,15 @@ const imageMap = {
 interface ProductCardProps {
   product: Product;
   onAddToCart?: (product: Product) => void;
+  onProductClick?: () => void;
 }
 
-export function ProductCard({ product, onAddToCart }: ProductCardProps) {
+export function ProductCard({ product, onAddToCart, onProductClick }: ProductCardProps) {
   const discountPercentage = Math.round(((product.priceMRP - product.priceActual) / product.priceMRP) * 100);
   const imageUrl = imageMap[product.imageUrl as keyof typeof imageMap] || perfume1;
 
   return (
-    <Card className="group overflow-hidden border-border hover:shadow-elegant transition-all duration-300 hover:-translate-y-1 bg-gradient-card">
+    <Card className="group overflow-hidden border-border hover:shadow-elegant transition-all duration-300 hover:-translate-y-1 bg-gradient-card cursor-pointer" onClick={onProductClick}>
       <div className="relative aspect-square overflow-hidden">
         <img
           src={imageUrl}
@@ -70,7 +71,10 @@ export function ProductCard({ product, onAddToCart }: ProductCardProps) {
 
           <Button 
             className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-card hover:shadow-elegant transition-all duration-300"
-            onClick={() => onAddToCart?.(product)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToCart?.(product);
+            }}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
             Add to Cart
