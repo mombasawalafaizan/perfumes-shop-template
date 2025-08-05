@@ -1,7 +1,6 @@
 import { Navbar } from '@/components/ui/navbar';
 import { Footer } from '@/components/ui/footer';
-import { Card, CardContent } from '@/components/ui/card';
-import { useState } from 'react';
+import { Card } from '@/components/ui/card';
 
 // Import the actual images
 import heroPerfumes from '@/assets/hero-perfumes.jpg';
@@ -9,11 +8,6 @@ import heroAttars from '@/assets/hero-attars.jpg';
 import heroCombos from '@/assets/hero-combos.jpg';
 
 const CollectionsPage = () => {
-  const [cartItemCount, setCartItemCount] = useState(0);
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
-  };
 
   const collections = [
     {
@@ -41,7 +35,7 @@ const CollectionsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar cartItemCount={cartItemCount} onCartClick={handleCartClick} />
+      <Navbar />
       
       {/* Hero Section */}
       <section className="bg-gradient-hero py-16">

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ShoppingCart, Menu, X, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useCart } from '@/hooks/useCart';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -9,13 +10,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-interface NavbarProps {
-  cartItemCount?: number;
-  onCartClick?: () => void;
-}
-
-export function Navbar({ cartItemCount = 0, onCartClick }: NavbarProps) {
+export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { totalItems, setCartOpen } = useCart();
 
   return (
     <nav className="sticky top-0 z-50 w-full bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 border-b border-border shadow-card">
@@ -74,12 +71,12 @@ export function Navbar({ cartItemCount = 0, onCartClick }: NavbarProps) {
               variant="ghost" 
               size="icon" 
               className="relative hover:bg-accent"
-              onClick={onCartClick}
+              onClick={() => setCartOpen(true)}
             >
               <ShoppingCart className="h-5 w-5" />
-              {cartItemCount > 0 && (
+              {totalItems > 0 && (
                 <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-primary text-primary-foreground text-xs">
-                  {cartItemCount}
+                  {totalItems}
                 </Badge>
               )}
             </Button>

@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { Navbar } from '@/components/ui/navbar';
 import { ProductCard } from '@/components/ui/product-card';
 import { Footer } from '@/components/ui/footer';
-import { getProductsByCategory, Product } from '@/data/products';
+import { getProductsByCategory } from '@/data/products';
 import { Button } from '@/components/ui/button';
-import { Filter, SortAsc } from 'lucide-react';
+import { SortAsc } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import {
   Select,
   SelectContent,
@@ -14,22 +15,9 @@ import {
 } from '@/components/ui/select';
 
 const PerfumesPage = () => {
-  const [cartItemCount, setCartItemCount] = useState(0);
   const [sortBy, setSortBy] = useState('name');
   const perfumes = getProductsByCategory('perfume');
-
-  const handleAddToCart = (product: Product) => {
-    setCartItemCount(prev => prev + 1);
-    console.log('Added to cart:', product);
-  };
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
-  };
-
-  const handleProductClick = (productId: string) => {
-    window.location.href = `/products/${productId}`;
-  };
+  const navigate = useNavigate();
 
   const sortedPerfumes = [...perfumes].sort((a, b) => {
     switch (sortBy) {
@@ -48,7 +36,7 @@ const PerfumesPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar cartItemCount={cartItemCount} onCartClick={handleCartClick} />
+      <Navbar />
       
       {/* Hero Section */}
       <section className="bg-gradient-hero py-16">
@@ -97,8 +85,7 @@ const PerfumesPage = () => {
             >
               <ProductCard 
                 product={product} 
-                onAddToCart={handleAddToCart}
-                onProductClick={() => handleProductClick(product.id)}
+                onProductClick={() => navigate(`/products/${product.id}`)}
               />
             </div>
           ))}

@@ -1,29 +1,18 @@
-import { useState } from 'react';
 import { Navbar } from '@/components/ui/navbar';
 import { HeroCarousel } from '@/components/ui/hero-carousel';
 import { ProductCard } from '@/components/ui/product-card';
 import { ComboCard } from '@/components/ui/combo-card';
 import { Footer } from '@/components/ui/footer';
-import { getFeaturedProducts, comboOffers, Product } from '@/data/products';
+import { getFeaturedProducts, comboOffers } from '@/data/products';
+import { useNavigate } from 'react-router-dom';
 
 const Index = () => {
-  const [cartItemCount, setCartItemCount] = useState(0);
   const featuredProducts = getFeaturedProducts();
-
-  const handleAddToCart = (product: Product | any) => {
-    setCartItemCount(prev => prev + 1);
-    // TODO: Add actual cart logic
-    console.log('Added to cart:', product);
-  };
-
-  const handleCartClick = () => {
-    // TODO: Open cart sidebar
-    console.log('Cart clicked');
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar cartItemCount={cartItemCount} onCartClick={handleCartClick} />
+      <Navbar />
       
       {/* Hero Carousel */}
       <HeroCarousel />
@@ -42,7 +31,10 @@ const Index = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {featuredProducts.map((product) => (
             <div key={product.id} className="animate-fade-in">
-              <ProductCard product={product} onAddToCart={handleAddToCart} />
+              <ProductCard 
+                product={product} 
+                onProductClick={() => navigate(`/products/${product.id}`)}
+              />
             </div>
           ))}
         </div>
@@ -72,7 +64,7 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {comboOffers.map((offer) => (
               <div key={offer.id} className="animate-fade-in">
-                <ComboCard offer={offer} onAddToCart={handleAddToCart} />
+                <ComboCard offer={offer} onAddToCart={() => {}} />
               </div>
             ))}
           </div>

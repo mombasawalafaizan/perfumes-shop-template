@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Product } from '@/data/products';
+import { useCart } from '@/hooks/useCart';
+import { useToast } from '@/hooks/use-toast';
 
 // Import the actual images
 import perfume1 from '@/assets/perfume-1.jpg';
@@ -17,13 +19,22 @@ const imageMap = {
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart?: (product: Product) => void;
   onProductClick?: () => void;
 }
 
-export function ProductCard({ product, onAddToCart, onProductClick }: ProductCardProps) {
+export function ProductCard({ product, onProductClick }: ProductCardProps) {
   const discountPercentage = Math.round(((product.priceMRP - product.priceActual) / product.priceMRP) * 100);
   const imageUrl = imageMap[product.imageUrl as keyof typeof imageMap] || perfume1;
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    addItem(product);
+    toast({
+      title: "Added to cart! 🛍️",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
 
   return (
     <Card className="group overflow-hidden border-border hover:shadow-elegant transition-all duration-300 hover:-translate-y-1 bg-gradient-card cursor-pointer" onClick={onProductClick}>
@@ -70,10 +81,10 @@ export function ProductCard({ product, onAddToCart, onProductClick }: ProductCar
           </div>
 
           <Button 
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-card hover:shadow-elegant transition-all duration-300"
+            className="w-full bg-gradient-golden text-black font-semibold hover:opacity-90 shadow-card hover:shadow-elegant transition-all duration-300"
             onClick={(e) => {
               e.stopPropagation();
-              onAddToCart?.(product);
+              handleAddToCart();
             }}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />

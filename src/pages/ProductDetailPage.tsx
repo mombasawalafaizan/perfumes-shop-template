@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { getProductById, Product } from '@/data/products';
 import { ShoppingCart, Heart, Share2, Minus, Plus, ArrowLeft } from 'lucide-react';
+import { useCart } from '@/hooks/useCart';
+import { useToast } from '@/hooks/use-toast';
 
 // Import the actual images
 import perfume1 from '@/assets/perfume-1.jpg';
@@ -22,9 +24,10 @@ const imageMap = {
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
-  const [cartItemCount, setCartItemCount] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isZoomed, setIsZoomed] = useState(false);
+  const { addItem } = useCart();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (id) {
@@ -34,12 +37,15 @@ const ProductDetailPage = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    setCartItemCount(prev => prev + quantity);
-    console.log('Added to cart:', product, 'Quantity:', quantity);
-  };
-
-  const handleCartClick = () => {
-    console.log('Cart clicked');
+    if (product) {
+      for (let i = 0; i < quantity; i++) {
+        addItem(product);
+      }
+      toast({
+        title: "Added to cart! 🛍️",
+        description: `${quantity} × ${product.name} added to your cart.`,
+      });
+    }
   };
 
   const goBack = () => {
@@ -49,7 +55,7 @@ const ProductDetailPage = () => {
   if (!product) {
     return (
       <div className="min-h-screen bg-background">
-        <Navbar cartItemCount={cartItemCount} onCartClick={handleCartClick} />
+        <Navbar />
         <div className="container mx-auto px-4 py-16 text-center">
           <h1 className="text-2xl font-bold text-foreground mb-4">Product Not Found</h1>
           <p className="text-muted-foreground mb-8">The product you're looking for doesn't exist.</p>
@@ -67,7 +73,7 @@ const ProductDetailPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar cartItemCount={cartItemCount} onCartClick={handleCartClick} />
+      <Navbar />
       
       {/* Breadcrumb */}
       <div className="container mx-auto px-4 py-4">
@@ -184,11 +190,11 @@ const ProductDetailPage = () => {
 
             {/* Action Buttons */}
             <div className="space-y-4">
-              <Button 
-                size="lg" 
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-elegant hover:shadow-premium transition-all duration-300"
-                onClick={handleAddToCart}
-              >
+            <Button 
+              size="lg" 
+              className="w-full bg-gradient-golden text-black font-semibold hover:opacity-90 shadow-elegant hover:shadow-premium transition-all duration-300"
+              onClick={handleAddToCart}
+            >
                 <ShoppingCart className="w-5 h-5 mr-2" />
                 Add to Cart
               </Button>
